@@ -1,1 +1,1 @@
-# hitchhikersecon
+# Hitchhiker's Guide to Economics

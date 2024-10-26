@@ -1,0 +1,263 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <title>P-Values, Pay No Attention To The Statistician Behind The Curtain.</title>
+        <style>
+            body {
+                font-family: monospace;
+                line-height: 1.6;
+                margin: 0 auto;
+                max-width: 800px;
+                padding: 20px;
+                letter-spacing: 0px;
+            }
+
+            /* Heading Styles */
+            h1 {
+                font-size: 24px; /* sMain title size */
+                line-height: 1.2;
+                margin-top: 40px;
+                margin-bottom: 20px;
+            }
+            
+            h2 {
+                font-size: 20px; /* Subtitle size */
+                line-height: 1.2;
+                margin-top: 30px;
+                margin-bottom: 15px;
+            }
+            
+            h3 {
+                font-size: 18px; /* Adjusted size for h3 to be smaller than h2 */
+                line-height: 1.2;
+                margin-top: 25px;
+                margin-bottom: 12px;
+            }
+            
+            h4 {
+                font-size: 15px; /* Subsection size */
+                line-height: 1.2;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+            
+            header {
+                border-bottom: 1px solid #ccc;
+                margin-bottom: 20px;
+            }
+            a {
+                color: #0066cc;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            .post-date {
+                color: #666;
+                font-size: 0.9em;
+            }
+            .post-content {
+                margin-top: 20px;
+            }
+            .quote {
+                background-color: #f0f0f0;
+                padding: 15px;
+                border-left: 5px solid #2c3e50;
+                margin: 20px 0;
+            }
+            .quote .quote {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            li {
+                padding: 2px 0;
+            }
+            em {
+                font-style: italic;
+            }
+            strong {
+                font-weight: bold;
+            }
+            /* MathJax styling */
+            .MathJax {
+                font-size: 1.1em !important;
+            }
+            .MathJax_Display {
+                margin: 1em 0 !important;
+                padding: 0.5em 0;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>P-Values, Pay No Attention To The Statistician Behind The Curtain.</h1>
+            <nav>
+                <a href="index.html">Back to Main Page</a>
+            </nav>
+        </header>
+        <main>
+            <article>
+                <p class="post-date">October 26, 2024</p>
+                <div class="post-content">
+                    <h1 id="introduction">Introduction</h1>
+<hr />
+<p>Every student who has taken an introductory statistics course or an introductory econometrics course should know what a p-value is. They help us determine if our variables are statistically significant in regressions, and allow us to analyse our null hypotheses. However, just like the $R^2$, there appears to be a lot of misunderstanding over what p-values <em>actually represent</em> and what conclusions we can <em>actually derive</em> from them. Most people are aware of p-hacking, however this is only one of the many misuses associated with p-values in statistical literature and classroom learning. </p>
+<p>Why isn't this talked about more, well I'm sure it is. But, there also appears to be an almost "cult" like following with p-values and other (unkillable) statistical tools.</p>
+<p>Now, don't get the wrong idea. P-values aren't inherently good or bad per se, but their ubiquitous misuse has made them more of a problem then a solution.  The misunderstanding of p-values is also ubiquitous within almost all fields. In fact <a href="https://journals.sagepub.com/doi/pdf/10.1177/2515245919858072">89% of Introduction-to-Psychology Textbooks that Define or Explain Statistical Significance do So Incorrectly.</a>, in fact, a concerningly large amount of the definitions on Google provide an incorrect definition of P-values.</p>
+<p>Now, I probably shouldn't cast stones. This guide is intended to help provide some additional understanding of p-values.</p>
+<p>I'm not going to discuss the issue of p-hacking (the manipulation of data to be presented as "statistically significant"). If you want more information on this subject, I would suggest reading some of the substantial literature:</p>
+<ul>
+<li>Gerber, A. S., &amp; Malhotra, N. (2008). Publication Bias in Empirical Sociological Research. <em>Sociological Methods &amp; Research</em>, <em>37</em>(1), 3–30. https://doi.org/10.1177/0049124108318973</li>
+<li>Head, M. L., Holman, L., Lanfear, R., Kahn, A. T., &amp; Jennions, M. D. (2015). The Extent and Consequences of P-Hacking in Science. <em>PLOS Biology</em>, <em>13</em>(3), e1002106. https://doi.org/10.1371/journal.pbio.1002106</li>
+<li>Leggett, N. C., Thomas, N. A., Loetscher, T., &amp; Nicholls, M. E. R. (2013). The Life of p: “Just Significant” Results are on the Rise. <em>Quarterly Journal of Experimental Psychology</em>, <em>66</em>(12), 2303–2309. https://doi.org/10.1080/17470218.2013.863371</li>
+<li>Masicampo, E. J., &amp; Lalande, D. R. (2012). A peculiar prevalence of p values just below .05. <em>Quarterly Journal of Experimental Psychology</em>, <em>65</em>(11), 2271–2279. https://doi.org/10.1080/17470218.2012.711335</li>
+<li>Simmons, J. P., Nelson, L. D., &amp; Simonsohn, U. (2011). False-positive psychology: Undisclosed flexibility in data collection and analysis allows presenting anything as significant. <em>Psychological Science</em>, <em>22</em>(11), 1359–1366. https://doi.org/10.1177/0956797611417632</li>
+</ul>
+<p>This guide is intended to be solely to help alleviate <em>unintentional</em> incorrect interpretations of p-values.</p>
+<h1 id="what-are-p-values">What are p-values?</h1>
+<hr />
+<div class="quote">
+
+<p>The P-value is defined as the probability, under the assumption of no effect or no difference (the null hypothesis), of obtaining a result equal to or more extreme than what actually observed.</p>
+</div>
+</blockquote>
+<p>What does this actually mean? Firstly, the Null Hypothesis assumes that there is no effect, or there is nod difference between groups. When we say that it is the probability of obtaining a result equal to or more extreme, we are basically saying that we should consider all possible outcomes that are as unlikely or more unlikely than the result we observed.</p>
+<ul>
+<li>This again links to the idea of magnitude when calculating test statistics in relation to the critical regions.</li>
+</ul>
+<p>Thus, a p-value is not a measure of how right you are, or how significant the difference is; it's a measure of <em>how surprised you should be</em> if there is no actual difference between groups, but you got data suggesting there is. Essentially, if we assume there is no effect, how surprised would we be if we measured an effect. </p>
+<p>Where "surprise" refers to how unusual or unexpected the observed results are.
+The bigger the difference the more surprised you would be, as such the lower the p-value. </p>
+<p>For example, the equation for the right-tail test statistic is as follows:
+$$p=\Pr(T\geq t \mid H_0)$$
+For a left-tail test statistic we have the following:
+$$p=\Pr(T\geq t \mid H_0)$$
+It should be clear how this equation reconciles with the above definition.</p>
+<p>Graphically, we can imagine the following normal distribution:
+<img src="Pasted Images/Pasted image 20241015234742.png" alt="Alt Text" style="width: 50%; height: auto; display: block; margin: auto;">
+Suppose we graph the areas of our p-value and alpha regions respectively as below. We can see that the p-value is greater than the alpha value ($p&gt;\alpha$). When this is the case, we fail to reject the null hypothesis. This is because the observed test statistic is <strong>not extreme enough</strong> to provide sufficient evidence against $H_0$.</p>
+<div class="quote">
+<p>Note: We are talking about area under the curve here, when discussing if the p-value is greater or less than the alpha value.</p>
+</div>
+<p><img src="Pasted Images/Pasted image 20241015234651.png" alt="Alt Text" style="width: 50%; height: auto; display: block; margin: auto;">
+If we graph the following graph where now the p-value is smaller than the alpha value ($p&lt;\alpha$), we can reject the null hypothesis. This is because the observed test statistic is <strong>extreme enough</strong> to provide strong evidence against the null hypothesis.</p>
+<p><img src="Pasted Images/Pasted image 20241015234718.png" alt="Alt Text" style="width: 50%; height: auto; display: block; margin: auto;"></p>
+<h1 id="p-value-limitations">P-Value Limitations</h1>
+<hr />
+<p>However, there are limitations. The <em>p</em> value is a measure of surprise, not a measure of the size of the effect. I can get a tiny <em>p</em> value by either measuring a huge effect – “this medicine makes people live four times longer” – or by measuring a tiny effect with great certainty. Statistical significance does not mean your result has any <em>practical</em> significance. Similarly, statistical <em>in-significance</em> is hard to interpret.</p>
+<p>This is because the p-value represents the probability of observing your data (or something more extreme) <strong>if the null hypothesis is true</strong>. When this probability is very low (i.e., below $\alpha$), it suggests that the data is unlikely under the null hypothesis, giving you reason to reject it.</p>
+<p><strong>P-values do not measure the probability that the studied hypothesis is true, or the probability that the data were produced by random chance alone.</strong> <strong>(Wasserstein &amp; Lazar, 2016)</strong></p>
+<ul>
+<li>Researchers often wish to turn a p-value into a statement about the truth of a null-hypothesis, or about the probability that random chance produced the observed data. The p-value is neither. It is a statement about data in relation to a specified hypothetical explanation, and is not a statement about the explanation itself.</li>
+<li>"The <em>p</em>-value... is a statement about data in relation to a specified hypothetical explanation, and is not a statement about the explanation itself." (Wasserstein &amp; Lazar, 2016)</li>
+<li>As such statements like "the p-value is the chance that the null hypothesis is true", "if the p-value is low, you can be confident that the effect you're testing for probably exists", "the p-value is a way of quantifying how confident we should be that the null hypothesis is false" are technically false. As aforementioned the p-value is really a measure of surprise.</li>
+</ul>
+<p>To understand why this, it is important to look at how P-values come about under the frequentist interpretation.</p>
+<h2 id="p-values-under-the-frequentist-framework">P-Values under the Frequentist Framework</h2>
+<hr />
+<p>The definition of the Frequentist interpretation is as follows:</p>
+<div class="quote">
+
+<p>In the frequentist interpretation, probabilities are discussed only when dealing with well-defined random experiments. The set of all possible outcomes of a random experiment is called the sample space of the experiment. An event is defined as a particular subset of the sample space to be considered. For any given event, only one of two possibilities may hold: It occurs or it does not occur. The relative frequency of occurrence of an event, observed in a number of repetitions of the experiment, is a measure of the <strong>probability</strong> of that event.</p>
+</div>
+</blockquote>
+<p>Under frequentist statistics, parameters (such as the mean or variance) are treated as fixed values <strong>not random variables</strong>. </p>
+<ul>
+<li>For example, if you're studying the average height of adults in a country, the true average height (mean) is considered a fixed value, even if you don’t know what it is.</li>
+<li>However, your data can vary, for example if you repeatedly measure the heights of random samples of adults from a population, the data you collect will vary from sample to sample, even though the underlying population mean (parameter) stays the same</li>
+</ul>
+<p>Thus, when you calculate probabilities (like in hypothesis testing), you're <strong>assessing the likelihood of observing your data given the parameters</strong>, not the likelihood of the parameters themselves. </p>
+<p>Furthermore, you cannot assign a probability to a fixed parameter (like the true mean) because it's either true or false, there’s no uncertainty in its actual value. However, you can assign probabilities to data.</p>
+<ul>
+<li>The <strong>null hypothesis</strong> is either <strong>true</strong> or <strong>false</strong> in the frequentist framework, but it's not random, it's probability is either (0, or 1). We can treat the null hypothesis as a parameter, as such whilst the true value of the parameter is a theoretical definite truth, we cannot know what it is. Therefore, assigning a probability to the null hypothesis itself is nonsensical.</li>
+<li>Thus, the <strong>p-value</strong> measures how extreme your observed data is under the assumption that the null hypothesis is true, not the probability of the null hypothesis being true.</li>
+</ul>
+<p>As such, whilst we can't say that "the p-value is the chance that the null hypothesis is true", we can say that since the p-value is a measure of surprise, "a small p-value is evidence against $H_0$".</p>
+<ul>
+<li>Although is this a good measure of evidence? Certainly not on it's own.</li>
+<li>"A <em>p</em>-value near 0.05 taken by itself offers only weak evidence against the null hypothesis. Likewise, a relatively large <em>p</em>-value does not imply evidence in favour of the null hypothesis; many other hypotheses may be equally or more consistent with the observed data."(Wasserstein &amp; Lazar, 2016)</li>
+<li>Indeed a low p-value may suggest that a true effect is occurring, which would suggest rejecting the null hypothesis.</li>
+<li>However, the small p-value may also be a result of random error. → You may have unintentionally committed sampling error, For example, if you're studying whether a new medication is effective, your sample might, just by chance, include more people who naturally recover quickly, leading to an overestimate of the medication's effectiveness. → Measurement error may also occur.</li>
+</ul>
+<p>As such, whilst a small p-value is evidence against the Null, it does NOT mean definitively that the Null hypothesis is false.</p>
+<p>Obviously the Bayesians would have a different perspective, however I will not go into it now, but a good explanation is by Andrew Gelman <a href="https://stat.columbia.edu/~gelman/research/published/STS149A.pdf">here</a>. Obligatory <a href="https://xkcd.com/1132/">XKCD</a>.</p>
+<h3 id="p-values-are-a-measure-of-sample-size">P-values are a measure of Sample Size</h3>
+<p>It's often expressed that p-values are simply a <a href="https://statmodeling.stat.columbia.edu/2009/06/18/the_sample_size/"><em>crude</em> measure of sample size</a>.</p>
+<ul>
+<li>When the sample size is small, it's very difficult to get a rejection (when $p&lt;0.05$), whereas when the sample size is large, just about anything will lead to a rejection of the null.</li>
+</ul>
+<p>In the <strong>frequentist approach</strong> to probability, probabilities are viewed as long-run frequencies of events.</p>
+<p>This means that a probability, denoted as $p$, is defined by observing how often an event occurs over a large number of trials. (This is a relatively simple interpretation):</p>
+<p>$$p=\lim_{n\rightarrow \infty}\frac{x}{n}$$
+This implies that the true probability $p$ is considered a fixed but unknown quantity. We do not view $p$ as a random variable; rather, we accept that $p$ exists as a constant that we aim to estimate through repeated trials or samples.</p>
+<p>Just as $p$ is fixed but unknown, other parameters (like the population mean $\mu$) are fixed and unknown. As aforementioned, these parameters are treated as fixed values <strong>not random variables</strong>. </p>
+<p>Whilst these parameters are <strong>fixed</strong>, we can however, calculate sample statistics, like $\hat{p}$ and $\bar{X}$. The frequentist approach allows us to talk about the <strong>distribution of $\hat{p}$</strong>, the sample success rate, conditional on the true (but unknown) parameter $p$. This means that we can calculate a test-statistic based on our sample statistic, for example we can calculate a test-statistic based on our $\bar{X}$.</p>
+<p>We know that the p-value is merely a function of a given test-statistic. It is calculated based on the observed value of $T$ (Test Statistic) and the <em>assumed</em> distribution of $T$ under the null hypothesis. (See equations below). Since the test statistic itself is a random variable, the p-value is also a random variable.</p>
+<p>Now as we've discussed above the sample size affects the variance of the sample mean (or any other test statistic). A larger sample size reduces the variance of the sample mean, making it more precise. This is because of the <a href="https://en.wikipedia.org/wiki/Law_of_large_numbers">Law of Large Numbers</a>, which means that the sample mean becomes more concentrated around the true population mean as the sample size approaches infinity $n\rightarrow \infty$.</p>
+<p>Suppose you are testing a hypothesis that your sample mean is equal to your population mean.
+$$H_0:\mu_X=\mu_0$$
+If the sample size is large, the variance of the sample is small, meaning any observed deviation from the hypothesised mean will likely lead to rejecting the null hypothesis because even small deviations would be statistically insignificant.</p>
+<p>The variance of our sample mean is given as the following equation:
+$$\text{Var}(\bar{X})=\frac{\sigma^2}{n}$$
+where $\sigma^2$ is the population variance. As $n$ increases, the variance of the sample mean decreases, resulting in the sample mean being closer to the true population mean.</p>
+<p>Since the test-statistic is calculated based on the difference between the <strong>observed</strong> sample mean and the hypothesised mean, scaled by the Standard Error (the square-root of our sample mean), a larger sample size $n$ results in a smaller standard error.
+$$\text{S.E}=\sqrt{\frac{\sigma^2}{n}}={\sigma/\sqrt{n}}$$
+$$n \rightarrow \infty \Longrightarrow \sigma/\sqrt{n}\rightarrow 0$$
+Therefore increasing $n$ results in the Standard error decreasing, and thus our test statistic ($T$) becomes larger for the same observed deviation from the hypothesised mean:
+$$T=\frac{\bar{X}-\mu_X}{S.E}=\frac{\bar{X}-\mu_X}{\sigma/\sqrt{n}}$$
+If we take the Absolute Value of our test statistic (i.e. $\left|{T}\right|$), we can see that as $n$ increases, our p-value will also decrease.
+$$p=\Pr(T\geq t \mid H_0)$$</p>
+<div class="quote">
+
+<p>$p=\Pr(T\geq t \mid H_0)$ represents the tail probability (specifically, the area under the curve in the tail regions). As $(\left|T\right| \geq t)$ gets larger, the area in the tails (where $\left|T\right| \geq t$) gets smaller, meaning the p-value decreases.</p>
+</div>
+<p>Therefore, even though $\left|T\right| \geq t$ is increasing, the <strong>p-value</strong> (which measures the tail probability) <strong>decreases</strong> because you're moving further into the extreme tail of the distribution.</p>
+</blockquote>
+<p>Which is why when the sample size is large, just about anything will lead to a rejection of the null. This represents adage that p-values are simply a "measure of sample size".</p>
+<p>Now, this is expected. If you null hypothesis is that our population mean is equal to some value:
+$$H_0: \mu_X = \mu_0$$
+As your sample size increases, the sample mean becomes a more accurate reflection of the population mean.  $\bar{X}\rightarrow \mu_0$. With a smaller standard error in a large sample, even a tiny difference/<strong>small deviation</strong> between the null hypothesis value and the sample mean becomes statistically significant. This means the test is more likely to reject the null hypothesis, even if the actual difference is small.</p>
+<p>In the case of an extremely large sample size, where $n=N$, then our same mean would also equal to our population mean:
+$$\bar{X}=\mu_X$$
+In this case, if the sample mean $\bar{X}$ is exactly equal to the population mean $\mu_X$ and if $\mu_X\neq \mu_0$, then you will always reject $H_0$ because the test statistic will be infinitely large (since $S.E=0$).</p>
+<p>For a more in-depth look/better explanation on the effect of sample size on p-values, I would suggest looking at Prof. Shalizi's <a href="http://bactra.org/weblog/1111.html">commentary</a></p>
+<h3 id="practical-significance-versus-statistical-significance">Practical Significance versus Statistical Significance</h3>
+<p>However, this leads to another problem with P-value <strong>interpretation</strong>, that is statistical significance, does not <em>always</em> equate to actual/practical significance:</p>
+<p><strong>A p-value, or statistical significance, does not measure the size of an effect or the importance of a result</strong> <strong>(Wasserstein &amp; Lazar, 2016)</strong></p>
+<ul>
+<li>Statistical significance is not equivalent to practical significance. Smaller p-values do not necessarily imply the presence of larger or more important effects, and larger p-values do not imply a lack of importance or even lack of effect. Any effect, no matter how small, can produce a small p-value if the sample size or measurement precision is high enough. Additionally, large effects may produce unimpressive p-values if the sample size is small or measurements are imprecise.</li>
+<li>For example, of a new educational program designed to improve student test scores. If the program is tested on a small sample of around 15 students, it might be found that test scores improved by 5 points, yet the p-value is high ($p&gt;0.05$). While statistically insignificant, this does not necessarily mean the effect is practically insignificant. Is this improvement a genuine result of the program or merely a product of chance?</li>
+<li>Furthermore, suppose the same program is implemented at a large school with around 1000 students, and it is found that the average score did increase, but only by 0.05 points, and there is a low p-value ($p&lt;0.05$), whilst it is statistically significant, it isn't necessarily practically significant.</li>
+</ul>
+<h1 id="references">References</h1>
+<hr />
+<p>Gelman, A. (2009). <em>“The sample size is huge, so a p-value of 0.007 is not that impressive” | Statistical Modeling, Causal Inference, and Social Science</em>. Statmodeling.stat.columbia.edu. <a href="https://statmodeling.stat.columbia.edu/2009/06/18/the_sample_size/">https://statmodeling.stat.columbia.edu/2009/06/18/the_sample_size/</a></p>
+
+<p>Greenland, S., Senn, S. J., Rothman, K. J., Carlin, J. B., Poole, C., Goodman, S. N., & Altman, D. G. (2016). Statistical tests, P values, Confidence intervals, and power: a Guide to Misinterpretations. <em>European Journal of Epidemiology</em>, <em>31</em>(4), 337–350. <a href="https://doi.org/10.1007/s10654-016-0149-3">https://doi.org/10.1007/s10654-016-0149-3</a></p>
+
+<p>Reinhart, A. (2019). <em>An introduction to data analysis — Statistics Done Wrong</em>. Statisticsdonewrong.com. <a href="https://www.statisticsdonewrong.com/data-analysis.html">https://www.statisticsdonewrong.com/data-analysis.html</a></p>
+
+<p>Wasserstein, R. L., & Lazar, N. A. (2016). The ASA Statement on p-Values: Context, Process, and Purpose. <em>The American Statistician</em>, <em>70</em>(2), 129–133. <a href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a></p>
+
+                </div>
+            </article>
+        </main>
+        <footer>
+            <p>Econ4Life</p>
+        </footer>
+        <script>
+            MathJax = {
+                tex: {
+                    inlineMath: [['$', '$']],
+                    displayMath: [['$$', '$$']]
+                }
+            };
+        </script>
+    </body>
+    </html>
+    

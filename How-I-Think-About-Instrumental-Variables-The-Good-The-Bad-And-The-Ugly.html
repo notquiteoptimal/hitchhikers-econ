@@ -123,10 +123,10 @@ $$\begin{aligned}
 Z_i \: \: \rightarrow \: \: X_i    \: \: \rightarrow \:  Y_i  \: \\  \uparrow \quad  \nearrow \:\:\:\:\:\: \:\\ \epsilon_i \quad \: \: \:\:\:\:\:\:\: \
 \end{aligned}$$
 This is our <strong>exogeneity</strong> assumption and can be defined as: $C(Z,\epsilon)=0$. To determine our population IV estimator, we can start with the exogeneity assumption, and determine that $E[Z_i\times \epsilon_i]=0$.</p>
-<p>We can then essentially generate two regressions denoted as the first stage and second stage regressions:
+<p>We can then essentially generate two regressions denoted as the first stage and second stage regressions:</p>
 $$Y=\alpha + \beta X_i + \epsilon_i$$
-$$\underbrace{X_i}<em _text_explained="\text{explained" variation="variation">\text{total variation} = \underbrace{\mu \: \:+ \: \: \rho Z_i}</em>=\hat{X}<em>i} \quad \: \:+ \underbrace{\eta_i}</em>\text{unexplained variation}$$
-This leads to the <strong>relevance assumption</strong> which implies that $\rho \neq 0$. This assumption is important as...</p>
+$$\underbrace{X_i}_\text{total variation} = \underbrace{\mu \: \:+ \: \: \rho Z_i}_{\text{explained variation}=\hat{X}_i} \quad \: \:+ \underbrace{\eta_i}_\text{unexplained variation}$$
+<p>This leads to the <strong>relevance assumption</strong> which implies that $\rho \neq 0$. This assumption is important as without it $Z$ cannot act as a valid instrument for helping determine the causal effects.</p>
 <hr />
 <h3 id="weak-instrument">Weak Instrument</h3>
 <p>The two-stage least squares (2SLS) method is capable of estimating the causal effect when an instrument fulfils three critical conditions. However, in practical applications, an additional implicit, yet crucial, requirement must be met for 2SLS to function effectively: <strong>the relevance condition must be sufficiently strong</strong>. ⇒ This means that the coefficient $\rho$, should be sufficiently different from zero. </p>
@@ -138,13 +138,13 @@ This leads to the <strong>relevance assumption</strong> which implies that $\rho
 <hr />
 <p>Thus, we have two equations, one where we isolate our independent variable, and one where we isolate our dependent variable:</p>
 <ol>
-    <li> \( Y = \alpha + \beta X_i + \epsilon_i \)</li>
-    <li> \( X_i = \mu + \rho Z_i + \eta_i \)</li>
+    <li>$\( Y = \alpha + \beta X_i + \epsilon_i \)$</li>
+    <li>$\( X_i = \mu + \rho Z_i + \eta_i \)$</li>
 </ol>
 <p>Additionally, based on our two previously described conditions for IV:</p>
 <ol>
-    <li><strong>Exogeneity</strong>: \( C(Z, \epsilon) = 0 \)</li>
-    <li><strong>Relevance</strong>: \( \rho \neq 0 \)</li>
+    <li><strong>Exogeneity</strong>: $\( C(Z, \epsilon) = 0 \)$</li>
+    <li><strong>Relevance</strong>: $\( \rho \neq 0 \)$</li>
 </ol>
 <p>If we define $\rho$ as being equal to the ratio of covariance between $Z$ and $X$, which we then standardised by our $Z$, we get the following equation:
 $$\hat{\rho}=\frac{C(Z,X)}{V(Z)}$$
@@ -252,7 +252,7 @@ Thus, we can see that the term $\frac{\partial \log(X)}{\partial X}\cdot c_3$ ca
             </article>
         </main>
         <footer>
-            <p>Econ4Life</p>
+            <p>Queries, Quibbles, and Quotes: notquiteoptimal@gmail.com</p>
         </footer>
         <script>
             MathJax = {

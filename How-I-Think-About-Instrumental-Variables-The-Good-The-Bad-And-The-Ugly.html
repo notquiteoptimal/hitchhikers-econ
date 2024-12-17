@@ -136,12 +136,16 @@ This leads to the <strong>relevance assumption</strong> which implies that $\rho
 <p>If an instrument is weak, it can cause computational difficulties when estimating $\beta$ by dividing by $\rho$, because it effectively resembles a division by a near-zero value.</p>
 <p>To determine whether $\rho$ is sufficiently distant from zero, a statistical test known as the <strong>F-test</strong> is performed on the first-stage regression, given that $\rho$ is a coefficient from this regression. The instrument is considered sufficiently strong, and thus not weak, <strong>if the F-test exceeds 10</strong>.</p>
 <hr />
-<p>Thus, we have two equations, one where we isolate our independent variable, and one where we isolate our dependent variable:
-1. $Y=\alpha + \beta X_i + \epsilon_i$
-2. $X_i = \mu + \rho Z_i + \eta_i$</p>
-<p>Additionally, based on our two previously described conditions for IV:
- 1. <strong>Exogeneity</strong>: $C(Z,\epsilon)=0$
- 2. <strong>Relevance</strong>: $\rho \neq 0$</p>
+<p>Thus, we have two equations, one where we isolate our independent variable, and one where we isolate our dependent variable:</p>
+<ol>
+    <li> \( Y = \alpha + \beta X_i + \epsilon_i \)</li>
+    <li> \( X_i = \mu + \rho Z_i + \eta_i \)</li>
+</ol>
+<p>Additionally, based on our two previously described conditions for IV:</p>
+<ol>
+    <li><strong>Exogeneity</strong>: \( C(Z, \epsilon) = 0 \)</li>
+    <li><strong>Relevance</strong>: \( \rho \neq 0 \)</li>
+</ol>
 <p>If we define $\rho$ as being equal to the ratio of covariance between $Z$ and $X$, which we then standardised by our $Z$, we get the following equation:
 $$\hat{\rho}=\frac{C(Z,X)}{V(Z)}$$
 Based on this equation, we can see that the strength of the instrument depends on the covariance between $Z$ (the instrument) and $X$. As discussed above, for a strong instrument we expect $\rho$ to be sufficiently non-zero, which also implies that $C(Z,X) \neq 0$.</p>
@@ -167,11 +171,11 @@ $$\hat{\beta}_{1(\text{IV})} = \frac{C(\hat{\rho} Z, Y)}{V(\hat{\rho} Z)}$$
 Based on this derivation we can see that the covariance between $\hat{X}$ and $Y$ depends only on the coefficient $\hat{\rho}$ and the covariance between $Y$ and $Z$. The constant $\hat{\mu}$ drops out because it does not contribute to the variation. Since we want to know the causal relationship between $X$ (the endogenous regressor) and $Y$ (the dependent variable), using an instrument $Z$, we can see that the covariance of $\hat{X}$ and $Y$ depends on the covariance of $Y$ and $Z$ multiplied by $\hat{\rho}$. If $\hat{\rho}$ is the strength of the instrument $Z$ (i.e. reflects how much $Z$ explains $X$), then the larger $\hat{\rho}$ is then $Z$ explains more of the variation in $X$, which will result in a stronger relationship between $Y$ and $\hat{X}$ through the instrument. Essentially, a higher $\hat{\rho}$  leads to a more reliable IV estimate because it provides more information to estimate the causal effect of $X$ on $Y$.</p>
 <p>This process is known as the 2SLS or 2-Stage Least Squares method, where the "first stage" is $X_i = \mu + \rho Z_i = \hat{X}_i + \eta_i$ , and our "second stage" is $Y_i = \beta_0 + \beta_1 (\hat{X_i}) + \epsilon_i$.</p>
 <p>In terms of our original Directed Acyclic Graph, instead of us taking the flawed route between $X$ and $Y$, we take an intermediate route via $\hat{X}_i$.</p>
-<p>$$\begin{aligned} \hat{X}_i \ \nearrow \quad \:  \downarrow \: \: \
-Z_i \: \: \rightarrow \: \: X_i    \: \: \rightarrow \:  Y_i  \: \  \uparrow \quad  \nearrow \:\:\:\:\:\: \:\ \epsilon_i \quad \: \: \:\:\:\:\:\:\: \
+$$\begin{aligned} \hat{X}_i \\ \nearrow \quad \:  \downarrow \: \: \\
+Z_i \: \: \rightarrow \: \: X_i    \: \: \rightarrow \:  Y_i  \: \\  \uparrow \quad  \nearrow \:\:\:\:\:\: \:\\ \epsilon_i \quad \: \: \:\:\:\:\:\:\: \
 \end{aligned}$$
 More cleanly,
-$$\begin{aligned} \hat{X}_i \ \nearrow \quad \:  \downarrow \: \: \
+$$\begin{aligned} \hat{X}_i \\ \nearrow \quad \:  \downarrow \: \: \\
 Z_i \: \: \rightarrow \: \: X_i    \: \: \xcancel{\rightarrow} \:  Y_i
 \end{aligned}$$
 Thanks to this diversion in our DAG, we are able to consistently estimate $\beta$ by using the instrument. However, this generally results in our models being slightly less precise, and generally have higher standard errors.</p>
@@ -180,9 +184,11 @@ Thanks to this diversion in our DAG, we are able to consistently estimate $\beta
 <hr />
 <h3 id="good-instruments">Good Instruments</h3>
 <p>Instrumental Variable Regression enables us to estimate the causal effect in the presence of <em>selection on an unobservable variable</em>, provided that we have access to <em>an additional observed variable</em> that fulfils specific criteria, known as an <strong>instrument</strong>. The instrument must meet three conditions:
-1. <strong>Exogeneity</strong>: The instrument must not be correlated with the confounding factors that introduce omitted variable bias.
-2. <strong>Relevance</strong>: The instrument should be correlated with the treatment variable.
-3. <strong>Exclusion</strong>: The instrument must not have a direct effect on the outcome variable.</p>
+<ol>
+    <li><strong>Exogeneity</strong>: The instrument must not be correlated with the confounding factors that introduce omitted variable bias.</li>
+    <li><strong>Relevance</strong>: The instrument should be correlated with the treatment variable.</li>
+    <li><strong>Exclusion</strong>: The instrument must not have a direct effect on the outcome variable.</li>
+</ol>
 <p>However, as far as I am aware, there exists no <em>effective</em> way to determine whether the <strong>Exogeneity and Exclusion Restrictions</strong> have properly been met without additional assumptions, as they depend on the validity of the theoretical arguments. How big of an effect this has, I am not sure.</p>
 <h3 id="homogeneity">Homogeneity</h3>
 <p>I think it is important to note that, for the above explanations of Instrumental Variables, they rely on the idea that the treatment effects are homogenous for every unit. This homogeneity assumption implies that each unit responds to the treatment in the same way, leading to a uniform treatment effect. This is a somewhat unrealistic assumption, especially if one wanted to make policy implications.</p>
@@ -209,15 +215,14 @@ $$A_1=\frac{\partial}{\partial X}E[Y|{do}(X)]=c_0$$</p>
 <ol>
 <li><strong>Unadjusted Estimate</strong> ($A_2$): This measures the naïve dependence of $Y$ on $X$, combining the direct causal effect and bias due to $U$:
 $$A_2=c_0+c_1\cdot c_2$$</li>
-<li><strong>Conditioned Estimate</strong> ($A_3$): After conditioning on $Z$, the dependence of $Y$ on $X$ includes contributions from both $U$ and $Z$:
+<li><strong>Conditioned Estimate</strong> ($A_3$): After conditioning on $Z$, the dependence of $Y$ on $X$ includes contributions from both $U$ and $Z$:<\li></ol>
 $$A_3=c_0 + c_2 \cdot \frac{c_1}{1-c_3^2}$$
 We can quantify bias before and after conditioning on $Z$ as follows:
 $$B_0=A_2-A_1=c_1 \cdot c_2$$
 $$B_Z=A_3-A_1=\frac{c_1\cdot c_2}{1-c_3^2}$$
 This means that:
 $$B_Z=\frac{B_0}{1-c_2^3}$$
-It is therefore clear that $\left| B_Z \right| \geq \left|B_0 \right|$ regardless of the signs $c_1$ and $c_2$, holding whenever $\left|B_0\right| &gt; 0$ and $c_3&gt;0$. This shows that if bias exists before IV ($B_0$), the bias is amplified by a factor inversely proportional to $1-c_3^2$, i.e. a factor of $\frac{1}{1-c_3^2}$. If $c_3$ (the effect of $Z$ on $X$) is close to $1$, the amplification is significant.</li>
-</ol>
+It is therefore clear that $\left| B_Z \right| \geq \left|B_0 \right|$ regardless of the signs $c_1$ and $c_2$, holding whenever $\left|B_0\right| &gt; 0$ and $c_3&gt;0$. This shows that if bias exists before IV ($B_0$), the bias is amplified by a factor inversely proportional to $1-c_3^2$, i.e. a factor of $\frac{1}{1-c_3^2}$. If $c_3$ (the effect of $Z$ on $X$) is close to $1$, the amplification is significant.
 <p>Thus, the amplification effect arises because conditioning on $Z$ aligns $X$ more closely with $U$, exacerbating the influence of the unobserved confounder.</p>
 <p>As the Pearl points out, this bias can be alleviated when using non-linear models. Suppose we take the same equations from above but apply non-linear functions:
 $$Y=f(X)+U\cdot g(X)+\epsilon_Y$$

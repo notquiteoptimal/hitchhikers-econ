@@ -114,13 +114,13 @@
 However, for whatever reason there is correlation between the explanatory variable $X$ and the error term $\epsilon$.
 $$
 \begin{aligned}
-Y_i \: \: = \: \: \alpha \: \:+ \: \:\beta_1 X_i \: \: + \: \: \epsilon_i \ \quad \overset{}{\nwarrow} \quad \overset{}{\nearrow} \ \text{correlation}
+Y_i \: \: = \: \: \alpha \: \:+ \: \:\beta_1 X_i \: \: + \: \: \epsilon_i \\ \quad \overset{}{\nwarrow} \quad \overset{}{\nearrow} \\ \text{correlation}
 \end{aligned}
 $$
 This will most likely occur due to Omitted Variable Bias, but it could also occur from data collection errors, etc. We can assume that more often the not, it will be due to OVB. In the case of OVB, we want to use an <strong>instrument</strong>, as that will help us find the true causal effect. Suppose, our new instrument is given as $Z$.</p>
 <p>$Z$ <em>must</em> be <strong>uncorrelated</strong> with $\epsilon$, but still correlate with $X$ and can only influence $Y$ through $X$. THUS, our instrument is <strong>exogenous</strong>, as it is causes $X$, but has no effect on $Y$ other than acting through $X$.
 $$\begin{aligned}
-Z_i \: \: \rightarrow \: \: X_i    \: \: \rightarrow \:  Y_i  \: \  \uparrow \quad  \nearrow \:\:\:\:\:\: \:\ \epsilon_i \quad \: \: \:\:\:\:\:\:\: \
+Z_i \: \: \rightarrow \: \: X_i    \: \: \rightarrow \:  Y_i  \: \\  \uparrow \quad  \nearrow \:\:\:\:\:\: \:\\ \epsilon_i \quad \: \: \:\:\:\:\:\:\: \
 \end{aligned}$$
 This is our <strong>exogeneity</strong> assumption and can be defined as: $C(Z,\epsilon)=0$. To determine our population IV estimator, we can start with the exogeneity assumption, and determine that $E[Z_i\times \epsilon_i]=0$.</p>
 <p>We can then essentially generate two regressions denoted as the first stage and second stage regressions:

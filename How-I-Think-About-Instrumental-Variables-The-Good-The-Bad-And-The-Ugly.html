@@ -1,3 +1,4 @@
+
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -5,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        <title>How I Think About Instrumental Variables: The Good, The Bad And The Ugly</title>
+        <title>How I Think About Instrumental Variables - The Good, The Bad And The Ugly.</title>
         <style>
             body {
                 font-family: monospace;
@@ -105,7 +106,7 @@
         </header>
         <main>
             <article>
-                <p class="post-date">December 04, 2024</p>
+                <p class="post-date">December 17, 2024</p>
                 <div class="post-content">
                     <p>The whole point of Instrumental variables regression is to estimate the causal effect of an <em>unobservable variable</em> that if NOT included would result in OVB.</p>
 <p>Essentially, you want to estimate the causal effect of $X$ on $Y$, given the estimated coefficient of $\beta_1$.</p>
@@ -113,50 +114,20 @@
 However, for whatever reason there is correlation between the explanatory variable $X$ and the error term $\epsilon$.
 $$
 \begin{aligned}
-Y_i \: \: = \: \: \alpha \: \:+ \: \:\beta_1 X_i \: \: + \: \: \epsilon_i \\ \quad \overset{}{\nwarrow} \quad \overset{}{\nearrow} \\ \text{correlation}
+Y_i \: \: = \: \: \alpha \: \:+ \: \:\beta_1 X_i \: \: + \: \: \epsilon_i \ \quad \overset{}{\nwarrow} \quad \overset{}{\nearrow} \ \text{correlation}
 \end{aligned}
 $$
 This will most likely occur due to Omitted Variable Bias, but it could also occur from data collection errors, etc. We can assume that more often the not, it will be due to OVB. In the case of OVB, we want to use an <strong>instrument</strong>, as that will help us find the true causal effect. Suppose, our new instrument is given as $Z$.</p>
 <p>$Z$ <em>must</em> be <strong>uncorrelated</strong> with $\epsilon$, but still correlate with $X$ and can only influence $Y$ through $X$. THUS, our instrument is <strong>exogenous</strong>, as it is causes $X$, but has no effect on $Y$ other than acting through $X$.
 $$\begin{aligned}
-Z_i \: \: \rightarrow \: \: X_i    \: \: \rightarrow \:  Y_i  \: \\  \uparrow \quad  \nearrow \:\:\:\:\:\: \:\\ \epsilon_i \quad \: \: \:\:\:\:\:\:\: \
-\end{aligned}$$</p>
-<p>We can then essentially generate two regressions:
-$$Y=\alpha + \beta X_i + \epsilon_i$$
-$$\underbrace{X_i}_\text{total variation} = \underbrace{\mu \: \:+ \: \: \rho Z_i}_{\text{explained variation}=\hat{X}_i} \quad \: \:+ \underbrace{\eta_i}_\text{unexplained variation}$$
-based on the second equation, we can see that the $\text{explained variation}$ is <strong>exogenous</strong> to our original equation because it depends on the exogenous variable $Z_i$ only. So in this sense, we split up our $X_i$ into a part that we can claim is certainly exogenous (the part that depends on $Z_i$) and some unexplained part $\eta_i$ that keeps all the bad variation which correlates with $\epsilon_i$. Now we take the exogenous part of this regression, and call it $\hat{X}_i$.</p>
-<p>We can put this into our original regression:
-$$Y_i = \alpha + \beta_1 (\mu + \rho Z_i) + \epsilon_i$$
-$$Y_i = \beta_0 + \beta_1 (\hat{X_i}) + \epsilon_i$$
-Since $\hat{X}_i$ is no longer correlated with $\epsilon_i$ (as we filtered out the correlated parts and left it in $\eta_i$) we can consistently estimate our $\beta$ because the instrument has helped us break the correlation between the explanatory variable and the error. Basically, $X_i$ is poisoned by unobserved factors in $\epsilon$ and we are simply cleaning/sucking that poison out when we calculate our instrument.</p>
-<p>This process is known as the 2SLS or 2-Stage Least Squares method, where the "first stage" is $X_i = \mu + \rho Z_i = \hat{X}_i + \eta_i$ , and our "second stage" is $Y_i = \beta_0 + \beta_1 (\hat{X_i}) + \epsilon_i$.</p>
-<p>In terms of our original Directed Acyclic Graph, instead of us taking the flawed route between $X$ and $Y$, we take an intermediate route via $\hat{X}_i$.</p>
-<p>$$\begin{aligned} \hat{X}_i \\ \nearrow \quad \:  \downarrow \: \: \\
-    Z_i \: \: \rightarrow \: \: X_i    \: \: \rightarrow \:  Y_i  \: \\  \uparrow \quad  \nearrow \:\:\:\:\:\: \:\\ \epsilon_i \quad \: \: \:\:\:\:\:\:\: \
-    \end{aligned}$$
-More cleanly,
-$$\begin{aligned} \hat{X}_i \\ \nearrow \quad \:  \downarrow \: \: \\
-Z_i \: \: \rightarrow \: \: X_i    \: \: \xcancel{\rightarrow} \:  Y_i
+Z_i \: \: \rightarrow \: \: X_i    \: \: \rightarrow \:  Y_i  \: \  \uparrow \quad  \nearrow \:\:\:\:\:\: \:\ \epsilon_i \quad \: \: \:\:\:\:\:\:\: \
 \end{aligned}$$
-Thanks to this diversion in our DAG, we are able to consistently estimate $\beta$ by using the instrument. However, this generally results in our models being slightly less precise, and generally have higher standard errors.</p>
-<p>I took inspiration from this <a href="https://stats.stackexchange.com/questions/563/what-is-an-instrumental-variable">Stack Exchange post</a>, for my diagrams, as I found this method more graspable then majority of the DAGs found in many econometrics textbooks.</p>
+This is our <strong>exogeneity</strong> assumption and can be defined as: $C(Z,\epsilon)=0$. To determine our population IV estimator, we can start with the exogeneity assumption, and determine that $E[Z_i\times \epsilon_i]=0$.</p>
+<p>We can then essentially generate two regressions denoted as the first stage and second stage regressions:
+$$Y=\alpha + \beta X_i + \epsilon_i$$
+$$\underbrace{X_i}<em _text_explained="\text{explained" variation="variation">\text{total variation} = \underbrace{\mu \: \:+ \: \: \rho Z_i}</em>=\hat{X}<em>i} \quad \: \:+ \underbrace{\eta_i}</em>\text{unexplained variation}$$
+This leads to the <strong>relevance assumption</strong> which implies that $\rho \neq 0$. This assumption is important as...</p>
 <hr />
-<h3 id="simple-derivation-of-iv-estimator">Simple Derivation of IV Estimator</h3>
-<p>We can also derive $\beta$ manually. Above I used $Z$ to represent the $\text{instrument}$,  $X$ to represent the $\text{treatment}$, and $Y$ to represent the $\text{outcome}$, for the below examples I will simply use the names.</p>
-<p>We start off with two regression models:</p>
-<p>$$\text{outcome}_i = \alpha + \beta \times \text{treatment}_i + \epsilon_i$$
-$$\text{treatment}_i = \mu + \rho \times \text{instrument}_i + \eta_i$$
-Kind of confusingly, the first model where <em>treatment</em> affects <em>outcome</em> is known as the <strong>second-stage model</strong> and the second model where the <em>instrument</em> affects the <em>treatment</em> is known as the <strong>first-stage model</strong>. This makes more sense if you think of the models in the above sections where the second stage model, is really the model where we input the treatment calculations $(Y_i = \alpha + \beta_1 [\mu + \rho Z_i] + \epsilon_i)$.</p>
-<p>Anyway, once we calculate the first-stage regression, we can essentially approximate the $\text{treatment}$ value by removing the $\eta_i$ (error term).</p>
-<p>Thus, $$\text{treatment}_i \approx \mu + \rho \times \text{instrument}_i$$
-We substitute that back into the second-stage regression to get:
-$$\text{outcome}_i = \alpha + \beta \times \text{treatment}_i + \epsilon_i$$</p>
-<p>$$\approx \alpha + \beta \times (\mu +\rho \times \text{instrument}) + \epsilon_i$$
-Expanding that out, we get:
-$$= \alpha + \beta \mu + \beta \rho \times \text{instrument}_i + \epsilon_i$$
-We simplify this down so that, $\kappa = \alpha +\beta\mu$ and $\lambda=\beta \rho$. Thus, because we know that $\lambda$ is simply equal to $\beta \rho$ and not some fancy equation like $\kappa$, we can simply divide he $\beta \rho$ by $\rho$ to get the value of $\beta$ on its own*:
-$$\frac{\lambda}{\rho}=\frac{\beta \rho}{\rho} = \beta$$
-*Assuming that $\rho \neq 0$ .</p>
 <h3 id="weak-instrument">Weak Instrument</h3>
 <p>The two-stage least squares (2SLS) method is capable of estimating the causal effect when an instrument fulfils three critical conditions. However, in practical applications, an additional implicit, yet crucial, requirement must be met for 2SLS to function effectively: <strong>the relevance condition must be sufficiently strong</strong>. ⇒ This means that the coefficient $\rho$, should be sufficiently different from zero. </p>
 <div class="quote">
@@ -164,96 +135,54 @@ $$\frac{\lambda}{\rho}=\frac{\beta \rho}{\rho} = \beta$$
 </div>
 <p>If an instrument is weak, it can cause computational difficulties when estimating $\beta$ by dividing by $\rho$, because it effectively resembles a division by a near-zero value.</p>
 <p>To determine whether $\rho$ is sufficiently distant from zero, a statistical test known as the <strong>F-test</strong> is performed on the first-stage regression, given that $\rho$ is a coefficient from this regression. The instrument is considered sufficiently strong, and thus not weak, <strong>if the F-test exceeds 10</strong>.</p>
-<h2 id="mathematical-derivation-of-the-iv-estimator">Mathematical Derivation of the IV Estimator</h2>
 <hr />
-<p>Remember out two equations from above:
-    <ol>
-        <li><strong>First Stage</strong>: $X_i = \mu + \rho Z_i = \hat{X}_i + \eta_i$</li>
-        <li><strong>Second Stage</strong>: $Y_i = \beta_0 + \beta_1 (\hat{X_i}) + \epsilon_i$</li>
-        </ol></p>
-<p>For each $i$ observation, we assume two important assumptions:
-    <ol>
-        <li><strong>Exogeneity</strong>: $C(Z,\epsilon)=0$</li>
-        <li><strong>Relevance</strong>: $\rho \neq 0$</li>
-        </ol>
-These are based upon the idea of strong instruments. 
-The following math is based on the expansions found in the <a href="https://mixtape.scunning.com/07-instrumental_variables#homogeneous-treatment-effects">Causal Mixtape</a>.</p>
-<p>To determine our population IV estimator, we can start with our Exogeneity assumption, and determine that $E[Z_i\times \epsilon_i]=0$.</p>
-<p>We can then rearrange our <em>Second Stage</em> equation to make $\epsilon_i$ as our dependent variable:
-$$\epsilon_i=Y_i-\beta_0-\beta_1X_i$$
-Thus, subbing this in to our expected value of the exogeneity assumption to get:
-$$E[Z_i\times(Y_i-\beta_0-\beta_1X_i)]=0$$
-Which if we expand out, by distributing our $Z_i$, we get:
-$$E[Z_iY_i]-\beta_0E[Z_i]-\beta_1 E[Z_iX_i]=0$$
-If our sample mean of $Z_i$ is zero, i.e. $\bar{Z}=0$, then $E[Z_i]=0$, which gets rid of our $\beta_0$ term, we can then rearrange our equation to isolate $\beta_1$ on the LHS, and simplifying to get:
-$$\beta_1=\frac{E[Z_i Y_i]}{E[Z_iX_i]}$$
-This gives us the population IV estimator. However, it is rare that we know the population, as such we often have to estimate the IV estimator based on sample averages.</p>
-<p>We can then use sample approximations for the above expected values, which allows us to calculate the $\beta_1$ estimator $\hat{\beta}$:
-$$E[Z_iY_i]\approx\frac{1}{n}\sum^n_{i=1}(Z_i-\bar{Z})(Y_i-\bar{Y})$$
-$$E[Z_iX_i]\approx\sum^n_{i=1}(Z_i-\bar{Z})(X_i-\bar{X})$$
-Thus, we can substitute this into our covariance equation to get:
-$$\hat{\beta_1}=\frac{\frac{1}{n}\sum^n_{i=1}(Z_i-\bar{Z})(Y_i-\bar{Y})}{\frac{1}{n}\sum^n_{i=1}(Z_i-\bar{Z})(X_i-\bar{X})}$$
-$$\hat{\beta_1}=\frac{\frac{1}{n}\sum^n_{i=1}(Z_i-\bar{Z})Y_i}{\frac{1}{n}\sum^n_{i=1}(Z_i-\bar{Z})X_i}$$
-If we then substitute the true model for $Y_i$, we get the following:
-$$\hat{\beta_1}=\frac{\frac{1}{n}\sum^n_{i=1}(Z_i-\bar{Z}){\alpha+\beta X_i+\epsilon_i}}{\frac{1}{n}\sum^n_{i=1}(Z_i-\bar{Z})X_i}$$
-$$=\hat{\beta_1} + \frac{\frac{1}{n}\sum^n_{i=1}(Z_i-\bar{Z})\epsilon_i}{\frac{1}{n}\sum^n_{i=1}(Z_i-\bar{Z})X_i}$$
-$$=\hat{\beta_1} + \text{"small if $n$ is large"}$$
-But what about the estimator for $\rho$, well we can treat $\beta$ coefficient simply as a ratio of Covariances.
-If we take our definition for covariances as:
-$$C(Z,Y)=C(Y,Z)=E[ZY]-E[Z]E[Y]$$
-$$C(Z,X)=C(X,Z)=E[ZX]-E[Z]E[X]$$
-Since $E[Z]=0$ under our assumption that $\bar{Z}=0$, these simplify to:
-$$C(Z,Y)=E[ZY]$$
-$$C(Z,X)=E[ZX]$$
-Which means that our $\beta_1$ estimator becomes:
-$${\beta_1}=\frac{C(Z,Y)}{C(Z,X)}$$
-So, let's return to our first description of $\hat{\beta}$ as the ratio of two covariances.
-$$\hat{\beta_1}=\frac{C(Z,Y)}{C(Z,X)}$$
-We can then make this estimation slightly more interpretable by standardising both the numerator and the denominator. If we divide by the variance of the instrument $V(Z)$, making the $\hat{\beta}_1$ coefficient interpretable in terms of how much change in $Y$ is expected for a change in $X$ that is induced by changes in the instrument $Z$:
-$$\hat{\beta}_1=\frac{\frac{C(Z,Y)}{V(Z)}}{\frac{C(Z,X)}{V(Z)}}$$</p>
-<p>We can then introduce our $\rho$ coefficient (the coefficient for our instrumental variable), which is equal to the ratio of covariance between $Z$ and $X$ standardised by our $Z$:
+<p>Thus, we have two equations, one where we isolate our independent variable, and one where we isolate our dependent variable:
+1. $Y=\alpha + \beta X_i + \epsilon_i$
+2. $X_i = \mu + \rho Z_i + \eta_i$</p>
+<p>Additionally, based on our two previously described conditions for IV:
+ 1. <strong>Exogeneity</strong>: $C(Z,\epsilon)=0$
+ 2. <strong>Relevance</strong>: $\rho \neq 0$</p>
+<p>If we define $\rho$ as being equal to the ratio of covariance between $Z$ and $X$, which we then standardised by our $Z$, we get the following equation:
 $$\hat{\rho}=\frac{C(Z,X)}{V(Z)}$$
-We can see that this is also simply equal to our denominator in our above $\hat{\beta}_1$. </p>
-<p>We can rewrite $\hat{\rho}$ as:
+Based on this equation, we can see that the strength of the instrument depends on the covariance between $Z$ (the instrument) and $X$. As discussed above, for a strong instrument we expect $\rho$ to be sufficiently non-zero, which also implies that $C(Z,X) \neq 0$.</p>
+<p>Based on the First-Stage equation, we can see that the <strong>explained variation</strong> is <strong>exogenous</strong> to our original equation because it depends on the exogenous variable $Z_i$ only. This is because $C(Z,\epsilon)=0$. Thus, when we estimate $X_i$, we split up our $X_i$ into a part that we can claim is certainly exogenous (the part that depends on $Z_i$) and some unexplained part $\eta_i$ that keeps all the bad variation which correlates with $\epsilon_i$. </p>
+<p>Essentially, if $\eta_i$ is the error term, it can be defined as $\eta_i=X_i-\hat{X}_i$, we are just subbing this in to our equation for $X_i$:
+$$X_i=\mu+\rho Z_i+(X_i-\hat{X}_i)$$
+$$X_i-(X_i-\hat{X}_i)=\mu+\rho Z_i$$
+$$\therefore \hat{X}_i = \hat{\mu} + \hat{\rho}{Z}_i$$</p>
+<p>We can then take this "exogenous part" of this regression, called $\hat{X}_i$, and put this it into our original regression:
+$$Y_i = \alpha + \beta_1 (\mu + \rho Z_i) + \epsilon_i$$
+$$Y_i = \beta_0 + \beta_1 (\hat{X_i}) + \epsilon_i$$
+Since $\hat{X}_i$ is no longer correlated with $\epsilon_i$ (as we filtered out the correlated parts and left it in $\eta_i$) we can consistently estimate our $\beta$ because the instrument has helped us break the correlation between the explanatory variable and the error. Basically, $X_i$ is poisoned by unobserved factors in $\epsilon$ and we are simply cleaning/sucking that poison out when we calculate our instrument.</p>
+<p>We can see this in our calculation of the IV estimator, if we define our $\hat{\beta}$ as:
+$$\hat{{\beta_1}}=\frac{C(Z,Y)}{C(Z,X)}$$
+And we multiply both sides by $\rho$ we proceed by multiplying both sides of the <strong>first-stage regression</strong> by $\rho$ because $X_i$​ is being projected onto $Z_i$ with the coefficient $\rho$ such that
 $$\hat{\rho}\cdot V(Z)=C(Z,X)$$
-Thus we can substitute in to get our IV estimator:
-$$\hat{{\beta}_{\text{1(IV)}}}=\frac{C(Z,Y)}{C(Z,X)}$$
-We can then multiply both sides by $\hat{\rho}$:
-$$=\frac{\hat{\rho}\cdot C(Z,Y)}{\hat{\rho}\cdot C(Z,X)}$$
-Since, we know that $C(Z,X)= \hat{\rho}\cdot V(Z)$ we can sub into the equation and simplify to get:
-$$=\frac{\hat{\rho}\cdot C(Z,Y)}{\hat{\rho}^2\cdot V(Z)}$$
-$$=\frac{C(\hat{\rho Z}, Y)}{V(\hat{\rho}Z)}$$
-Notice now what is inside the parentheses: $\hat{\rho}Z$, which are the fitted values from the first-stage of the regression. We are thus, no longer, using $X$, we are using its fitted values. Recall that:
-$$X_i = \mu + \rho Z_i \Leftrightarrow \hat{X}_i + \eta_i$$
-and,
+Substituting this into the IV estimator, we get:
+$$\hat{\beta}_1 = \frac{C(Z, Y)}{C(Z, X)} = \frac{C(Z, Y)}{\hat{\rho} \cdot V(Z)}$$
+However, to maintain equality we need to multiply both sides:</p>
+<p>$$=\frac{\hat{\rho}\cdot C(Z,Y)}{\hat{\rho}\cdot C(Z,X)}$$</p>
+<p>$$=\frac{\hat{\rho}\cdot C(Z,Y)}{\hat{\rho}^2\cdot V(Z)}$$
 $$\hat{\beta}_{1(\text{IV})} = \frac{C(\hat{\rho} Z, Y)}{V(\hat{\rho} Z)}$$
-Then the 2SLS estimator is:
-$$\hat{\beta}_{1(\text{IV})} = \frac{C(\hat{\rho} Z, Y)}{V(\hat{\rho} Z)}$$
-What this coefficient allows us to know is that:
-$$C(\hat{X},Y)=E[\hat{X}Y]-E[\hat{X}]E[Y]$$
-We can then substitute $\hat{X}=\hat{\mu} + \hat{\rho} Z_i$ into the above definition:
-$$C(\hat{X},Y)=E[Y(\hat{\mu} + \hat{\rho} Z_i)]-E[Y]E[\hat{\mu} + \hat{\rho} Z_i]$$
-We can then expand out the expectations:
-$$E[Y(\hat{\mu} + \hat{\rho} Z_i)]=\hat{\mu}E[Y]+\hat{\rho}E[YZ]$$
-$$E[\hat{\mu} + \hat{\rho} Z_i]=\hat{\mu}+\hat{\rho}E[Z]$$
-Thus,
-$$E[Y]E[\hat{\mu} + \hat{\rho} Z_i]=\hat{\mu}E[Y]+\hat{\rho}E[Y]E[Z]$$
-Which we can then substitute back into the covariance formula:
-$$C(\hat{X},Y)=[\hat{\mu}E[Y]+\hat{\rho}E[YZ]]-[\hat{\mu}E[Y]]+\hat{\rho}E[Y]E[Z]$$
-We can then cancel out $\hat{\mu}E[Y]$:
-$$C(\hat{X},Y)=\hat{\rho}(E[YZ]-E[Y]E[Z])$$
-Since $E[YZ]-E[Y]E[Z]$ is the definition of covariance $C(Y,Z)$. Thus:
-$$C(\hat{X},Y)=\hat{\rho}C(Y,Z)$$
 Based on this derivation we can see that the covariance between $\hat{X}$ and $Y$ depends only on the coefficient $\hat{\rho}$ and the covariance between $Y$ and $Z$. The constant $\hat{\mu}$ drops out because it does not contribute to the variation. Since we want to know the causal relationship between $X$ (the endogenous regressor) and $Y$ (the dependent variable), using an instrument $Z$, we can see that the covariance of $\hat{X}$ and $Y$ depends on the covariance of $Y$ and $Z$ multiplied by $\hat{\rho}$. If $\hat{\rho}$ is the strength of the instrument $Z$ (i.e. reflects how much $Z$ explains $X$), then the larger $\hat{\rho}$ is then $Z$ explains more of the variation in $X$, which will result in a stronger relationship between $Y$ and $\hat{X}$ through the instrument. Essentially, a higher $\hat{\rho}$  leads to a more reliable IV estimate because it provides more information to estimate the causal effect of $X$ on $Y$.</p>
+<p>This process is known as the 2SLS or 2-Stage Least Squares method, where the "first stage" is $X_i = \mu + \rho Z_i = \hat{X}_i + \eta_i$ , and our "second stage" is $Y_i = \beta_0 + \beta_1 (\hat{X_i}) + \epsilon_i$.</p>
+<p>In terms of our original Directed Acyclic Graph, instead of us taking the flawed route between $X$ and $Y$, we take an intermediate route via $\hat{X}_i$.</p>
+<p>$$\begin{aligned} \hat{X}_i \ \nearrow \quad \:  \downarrow \: \: \
+Z_i \: \: \rightarrow \: \: X_i    \: \: \rightarrow \:  Y_i  \: \  \uparrow \quad  \nearrow \:\:\:\:\:\: \:\ \epsilon_i \quad \: \: \:\:\:\:\:\:\: \
+\end{aligned}$$
+More cleanly,
+$$\begin{aligned} \hat{X}_i \ \nearrow \quad \:  \downarrow \: \: \
+Z_i \: \: \rightarrow \: \: X_i    \: \: \xcancel{\rightarrow} \:  Y_i
+\end{aligned}$$
+Thanks to this diversion in our DAG, we are able to consistently estimate $\beta$ by using the instrument. However, this generally results in our models being slightly less precise, and generally have higher standard errors.</p>
+<p>I took inspiration from this <a href="https://stats.stackexchange.com/questions/563/what-is-an-instrumental-variable">Stack Exchange post</a>, for my diagrams, as I found this method more graspable then majority of the DAGs found in many econometrics textbooks.</p>
 <h1 id="a-comment-on-iv-assumptions">A Comment on IV Assumptions</h1>
 <hr />
 <h3 id="good-instruments">Good Instruments</h3>
 <p>Instrumental Variable Regression enables us to estimate the causal effect in the presence of <em>selection on an unobservable variable</em>, provided that we have access to <em>an additional observed variable</em> that fulfils specific criteria, known as an <strong>instrument</strong>. The instrument must meet three conditions:
-    <ol>
-        <li><strong>Exogeneity</strong>: The instrument must not be correlated with the confounding factors that introduce omitted variable bias.</li>
-        <li><strong>Relevance</strong>: The instrument should be correlated with the treatment variable.</li>
-        <li><strong>Exclusion</strong>: The instrument must not have a direct effect on the outcome variable.</p></li>
-    </ol>
+1. <strong>Exogeneity</strong>: The instrument must not be correlated with the confounding factors that introduce omitted variable bias.
+2. <strong>Relevance</strong>: The instrument should be correlated with the treatment variable.
+3. <strong>Exclusion</strong>: The instrument must not have a direct effect on the outcome variable.</p>
 <p>However, as far as I am aware, there exists no <em>effective</em> way to determine whether the <strong>Exogeneity and Exclusion Restrictions</strong> have properly been met without additional assumptions, as they depend on the validity of the theoretical arguments. How big of an effect this has, I am not sure.</p>
 <h3 id="homogeneity">Homogeneity</h3>
 <p>I think it is important to note that, for the above explanations of Instrumental Variables, they rely on the idea that the treatment effects are homogenous for every unit. This homogeneity assumption implies that each unit responds to the treatment in the same way, leading to a uniform treatment effect. This is a somewhat unrealistic assumption, especially if one wanted to make policy implications.</p>
@@ -318,7 +247,7 @@ Thus, we can see that the term $\frac{\partial \log(X)}{\partial X}\cdot c_3$ ca
             </article>
         </main>
         <footer>
-            <p>Queries, Quibbles, and Quotes: notquiteoptimal@gmail.com</p>
+            <p>Econ4Life</p>
         </footer>
         <script>
             MathJax = {
